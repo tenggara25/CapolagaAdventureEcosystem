@@ -1,144 +1,139 @@
 "use client";
 
 import Image from "next/image";
-import { Star, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Star, ChevronRight, Sparkles } from "lucide-react";
 
 const experiences = [
   {
     id: 1,
-    title: "Glamping Riverside",
+    title: "Glamping Riverside Luxury",
     description:
-      "Nikmati pengalaman glamping mewah di tepi sungai dengan pemandangan alam yang memukau.",
-    price: "Rp 850.000",
+      "Tenda glamping mewah dengan pemandangan langsung ke sungai Capolaga.",
+    price: "850.000",
     priceUnit: "/malam",
     rating: 4.9,
-    reviews: 128,
-    location: "Capolaga, Subang",
     image: "/images/glamping.jpg",
-    badge: "Best Seller",
+    badge: "POPULER",
   },
   {
     id: 2,
-    title: "Camping Ground",
+    title: "Standard Camping Ground",
     description:
-      "Area camping luas dengan fasilitas lengkap, cocok untuk keluarga dan grup.",
-    price: "Rp 150.000",
-    priceUnit: "/orang",
+      "Area camping luas di bawah hutan pinus dengan fasilitas toilet bersih.",
+    price: "150.000",
+    priceUnit: "/malam",
     rating: 4.7,
-    reviews: 256,
-    location: "Capolaga, Subang",
     image: "/images/camping.jpg",
-    badge: "Populer",
+    badge: null,
   },
   {
     id: 3,
-    title: "Homestay Forest",
+    title: "Homestay Forest View",
     description:
-      "Penginapan tradisional di tengah hutan dengan nuansa alami dan tenang.",
-    price: "Rp 450.000",
+      "Rumah kayu estetik yang nyaman untuk keluarga besar.",
+    price: "1.300.000",
     priceUnit: "/malam",
     rating: 4.8,
-    reviews: 89,
-    location: "Capolaga, Subang",
     image: "/images/homestay.jpg",
-    badge: "Nyaman",
+    badge: null,
+  },
+  {
+    id: 4,
+    title: "Rafting Ciater Adventure",
+    description:
+      "Paket rafting seru di aliran sungai Ciater dekat kawasan Capolaga.",
+    price: "350.000",
+    priceUnit: "/Pax",
+    rating: 5.0,
+    image: "/images/rafting.jpg",
+    badge: null,
   },
 ];
 
 export function FeaturedExperiences() {
   return (
-    <section id="booking" className="py-20 md:py-28 bg-background">
+    <section id="booking" className="py-10 md:py-14 bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-            Akomodasi
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
-            Featured Experiences
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Pilih pengalaman menginap terbaik sesuai keinginan Anda. Dari
-            glamping mewah hingga camping tradisional.
-          </p>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              Featured Experiences
+            </h2>
+          </div>
+          <Link
+            href="/booking"
+            className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+          >
+            Lihat Semua
+            <ChevronRight className="h-4 w-4" />
+          </Link>
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
           {experiences.map((exp) => (
-            <div
+            <Link
               key={exp.id}
-              className="group bg-card rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              href="/booking"
+              className="group bg-card rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-lg transition-all duration-300"
             >
               {/* Image */}
-              <div className="relative h-56 md:h-64 overflow-hidden">
+              <div className="relative aspect-[4/3] overflow-hidden">
                 <Image
                   src={exp.image}
                   alt={exp.title}
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full">
-                    {exp.badge}
-                  </span>
-                </div>
+                {/* Badge */}
+                {exp.badge && (
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-1 bg-[#e85a4f] text-white text-xs font-bold rounded-md">
+                      {exp.badge}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Content */}
-              <div className="p-5 md:p-6">
-                {/* Location */}
-                <div className="flex items-center gap-1 text-muted-foreground text-sm mb-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>{exp.location}</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-xl font-bold text-card-foreground mb-2">
-                  {exp.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                  {exp.description}
-                </p>
-
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold text-card-foreground">
+              <div className="p-4">
+                {/* Title & Rating */}
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="font-semibold text-card-foreground text-sm leading-tight line-clamp-2">
+                    {exp.title}
+                  </h3>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-medium text-card-foreground">
                       {exp.rating}
                     </span>
                   </div>
-                  <span className="text-muted-foreground text-sm">
-                    ({exp.reviews} ulasan)
-                  </span>
                 </div>
 
-                {/* Price & Button */}
-                <div className="flex items-center justify-between pt-4 border-t border-border">
-                  <div>
-                    <span className="text-xl font-bold text-primary">
-                      {exp.price}
+                {/* Description */}
+                <p className="text-muted-foreground text-xs mb-4 line-clamp-2">
+                  {exp.description}
+                </p>
+
+                {/* Price */}
+                <div className="pt-3 border-t border-border">
+                  <span className="text-xs text-muted-foreground uppercase">Mulai dari</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-lg font-bold text-primary">
+                      Rp {exp.price}
                     </span>
                     <span className="text-muted-foreground text-sm">
                       {exp.priceUnit}
                     </span>
                   </div>
-                  <Button size="sm">Booking</Button>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
-        </div>
-
-        {/* View All Button */}
-        <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
-            Lihat Semua Akomodasi
-          </Button>
         </div>
       </div>
     </section>
