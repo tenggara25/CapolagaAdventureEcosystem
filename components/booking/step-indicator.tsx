@@ -4,12 +4,12 @@ import { Check, Home, Calendar, Sparkles, ShoppingCart, CreditCard, CheckCircle 
 import { cn } from "@/lib/utils";
 
 const steps = [
-  { id: 1, label: "Pilih Akomodasi", icon: Home },
-  { id: 2, label: "Pilih Tanggal", icon: Calendar },
+  { id: 1, label: "Akomodasi", icon: Home },
+  { id: 2, label: "Tanggal", icon: Calendar },
   { id: 3, label: "Add-on", icon: Sparkles },
   { id: 4, label: "Keranjang", icon: ShoppingCart },
   { id: 5, label: "Checkout", icon: CreditCard },
-  { id: 6, label: "Konfirmasi", icon: CheckCircle },
+  { id: 6, label: "Selesai", icon: CheckCircle },
 ];
 
 interface StepIndicatorProps {
@@ -18,52 +18,54 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ currentStep }: StepIndicatorProps) {
   return (
-    <div className="w-full py-4 overflow-x-auto">
-      <div className="flex items-center justify-between min-w-[600px] px-4">
-        {steps.map((step, index) => {
-          const isCompleted = currentStep > step.id;
-          const isCurrent = currentStep === step.id;
-          const Icon = step.icon;
+    <div className="w-full py-6">
+      <div className="flex items-center justify-center">
+        <div className="flex items-center gap-0 sm:gap-2 w-full max-w-3xl px-2">
+          {steps.map((step, index) => {
+            const isCompleted = currentStep > step.id;
+            const isCurrent = currentStep === step.id;
+            const Icon = step.icon;
 
-          return (
-            <div key={step.id} className="flex items-center flex-1">
-              <div className="flex flex-col items-center">
-                <div
-                  className={cn(
-                    "flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all",
-                    isCompleted && "bg-primary border-primary text-primary-foreground",
-                    isCurrent && "bg-primary/10 border-primary text-primary",
-                    !isCompleted && !isCurrent && "bg-muted border-muted-foreground/30 text-muted-foreground"
-                  )}
-                >
-                  {isCompleted ? (
-                    <Check className="w-5 h-5" />
-                  ) : (
-                    <Icon className="w-5 h-5" />
-                  )}
+            return (
+              <div key={step.id} className="flex items-center flex-1">
+                <div className="flex flex-col items-center gap-2 w-full">
+                  <div
+                    className={cn(
+                      "relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 transition-all duration-300",
+                      isCompleted && "bg-primary border-primary text-primary-foreground shadow-md",
+                      isCurrent && "bg-primary/10 border-primary text-primary ring-4 ring-primary/20",
+                      !isCompleted && !isCurrent && "bg-muted border-border text-muted-foreground"
+                    )}
+                  >
+                    {isCompleted ? (
+                      <Check className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={3} />
+                    ) : (
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      "text-[10px] sm:text-xs font-medium text-center transition-colors",
+                      isCurrent && "text-primary font-semibold",
+                      isCompleted && "text-primary",
+                      !isCompleted && !isCurrent && "text-muted-foreground"
+                    )}
+                  >
+                    {step.label}
+                  </span>
                 </div>
-                <span
-                  className={cn(
-                    "mt-2 text-xs font-medium text-center whitespace-nowrap",
-                    isCurrent && "text-primary",
-                    isCompleted && "text-primary",
-                    !isCompleted && !isCurrent && "text-muted-foreground"
-                  )}
-                >
-                  {step.label}
-                </span>
+                {index < steps.length - 1 && (
+                  <div
+                    className={cn(
+                      "h-0.5 flex-1 mx-1 sm:mx-2 -mt-6 transition-colors duration-300",
+                      currentStep > step.id ? "bg-primary" : "bg-border"
+                    )}
+                  />
+                )}
               </div>
-              {index < steps.length - 1 && (
-                <div
-                  className={cn(
-                    "flex-1 h-0.5 mx-2 mt-[-20px]",
-                    currentStep > step.id ? "bg-primary" : "bg-muted-foreground/30"
-                  )}
-                />
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

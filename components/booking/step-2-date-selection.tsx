@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useBooking } from "@/lib/booking-context";
 import { timeSlots } from "@/lib/booking-types";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
+import { ChevronLeft, Minus, Plus, Clock, CalendarDays, Moon, Sun } from "lucide-react";
 
 export function Step2DateSelection() {
   const {
@@ -28,7 +27,6 @@ export function Step2DateSelection() {
 
   const handleContinue = () => {
     if (selectedDate && selectedTimeSlot && selectedAccommodation) {
-      // Update cart with date and nights info
       const existingItem = cart.find((item) => item.id === selectedAccommodation.id);
       if (existingItem) {
         removeFromCart(selectedAccommodation.id);
@@ -58,151 +56,210 @@ export function Step2DateSelection() {
     }).format(price);
   };
 
+  const formatDateDisplay = (date: Date | undefined) => {
+    if (!date) return "Pilih tanggal";
+    return date.toLocaleDateString("id-ID", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const getCheckoutDate = () => {
+    if (!selectedDate) return null;
+    const checkout = new Date(selectedDate);
+    checkout.setDate(checkout.getDate() + nights);
+    return checkout;
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground">Pilih Tanggal & Waktu</h2>
-        <p className="text-muted-foreground mt-2">
+    <div className="max-w-5xl mx-auto space-y-8">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Pilih Tanggal & Waktu</h1>
+        <p className="text-muted-foreground max-w-lg mx-auto">
           Tentukan tanggal check-in dan durasi menginap Anda
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Selected Accommodation Preview */}
-        {selectedAccommodation && (
-          <Card className="lg:col-span-1">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Akomodasi Terpilih</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative aspect-video rounded-lg overflow-hidden mb-3">
+      <div className="grid gap-6 lg:grid-cols-12">
+        {/* Left Column - Accommodation & Nights */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Selected Accommodation */}
+          {selectedAccommodation && (
+            <Card className="overflow-hidden">
+              <div className="relative aspect-video">
                 <Image
                   src={selectedAccommodation.image}
                   alt={selectedAccommodation.name}
                   fill
                   className="object-cover"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-3 left-3 right-3">
+                  <h3 className="font-semibold text-white">{selectedAccommodation.name}</h3>
+                  <p className="text-white/80 text-sm">{selectedAccommodation.location}</p>
+                </div>
               </div>
-              <h3 className="font-semibold">{selectedAccommodation.name}</h3>
-              <p className="text-sm text-muted-foreground">{selectedAccommodation.location}</p>
-              <div className="flex items-center justify-between mt-3">
-                <span className="text-lg font-bold text-primary">
-                  {formatPrice(selectedAccommodation.price)}
-                </span>
-                <span className="text-sm text-muted-foreground">/malam</span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-bold text-primary">
+                    {formatPrice(selectedAccommodation.price)}
+                  </span>
+                  <span className="text-muted-foreground">/malam</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Calendar */}
-        <Card className="lg:col-span-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Pilih Tanggal Check-in</CardTitle>
-          </CardHeader>
-          <CardContent className="flex justify-center">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              disabled={(date) => date < new Date()}
-              className="rounded-md border"
-            />
-          </CardContent>
-        </Card>
-
-        {/* Time Slots & Nights */}
-        <Card className="lg:col-span-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Waktu & Durasi</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Nights Selection */}
-            <div>
-              <label className="text-sm font-medium text-foreground mb-3 block">
-                Jumlah Malam
-              </label>
-              <div className="flex items-center justify-center gap-4">
+          {/* Nights Selection */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Moon className="w-4 h-4 text-primary" />
+                Durasi Menginap
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-center gap-6 py-2">
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={decrementNights}
                   disabled={nights <= 1}
+                  className="h-12 w-12 rounded-full"
                 >
-                  <Minus className="h-4 w-4" />
+                  <Minus className="h-5 w-5" />
                 </Button>
-                <span className="text-2xl font-bold w-12 text-center">{nights}</span>
+                <div className="text-center">
+                  <span className="text-4xl font-bold text-foreground">{nights}</span>
+                  <p className="text-sm text-muted-foreground">malam</p>
+                </div>
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={incrementNights}
                   disabled={nights >= 14}
+                  className="h-12 w-12 rounded-full"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-5 w-5" />
                 </Button>
               </div>
-            </div>
 
-            {/* Time Slots */}
-            <div>
-              <label className="text-sm font-medium text-foreground mb-3 block">
-                Waktu Check-in
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {timeSlots.map((slot) => (
-                  <Button
-                    key={slot.id}
-                    variant={selectedTimeSlot === slot.time ? "default" : "outline"}
-                    size="sm"
-                    className={cn(
-                      "justify-center",
-                      !slot.available && "opacity-50 cursor-not-allowed"
-                    )}
-                    disabled={!slot.available}
-                    onClick={() => setSelectedTimeSlot(slot.time)}
-                  >
-                    {slot.time}
-                    {!slot.available && (
-                      <Badge variant="secondary" className="ml-1 text-[10px]">
-                        Penuh
-                      </Badge>
-                    )}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            {/* Total Preview */}
-            {selectedAccommodation && (
-              <div className="pt-4 border-t">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {formatPrice(selectedAccommodation.price)} x {nights} malam
-                  </span>
-                  <span className="font-semibold">
-                    {formatPrice(selectedAccommodation.price * nights)}
-                  </span>
+              {/* Date Range Display */}
+              {selectedDate && (
+                <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <Sun className="w-4 h-4 text-primary" />
+                      <span className="text-muted-foreground">Check-in</span>
+                    </div>
+                    <span className="font-medium">{formatDateDisplay(selectedDate)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <Moon className="w-4 h-4 text-primary" />
+                      <span className="text-muted-foreground">Check-out</span>
+                    </div>
+                    <span className="font-medium">{formatDateDisplay(getCheckoutDate() || undefined)}</span>
+                  </div>
                 </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Middle Column - Calendar */}
+        <div className="lg:col-span-5">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <CalendarDays className="w-4 h-4 text-primary" />
+                Pilih Tanggal Check-in
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex justify-center pb-6">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                disabled={(date) => date < new Date()}
+                className="rounded-lg border-0"
+              />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Time Slots */}
+        <div className="lg:col-span-3">
+          <Card className="h-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Clock className="w-4 h-4 text-primary" />
+                Waktu Check-in
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {timeSlots.map((slot) => (
+                <Button
+                  key={slot.id}
+                  variant={selectedTimeSlot === slot.time ? "default" : "outline"}
+                  size="lg"
+                  className={cn(
+                    "w-full justify-center font-medium transition-all",
+                    !slot.available && "opacity-50 cursor-not-allowed",
+                    selectedTimeSlot === slot.time && "shadow-md"
+                  )}
+                  disabled={!slot.available}
+                  onClick={() => setSelectedTimeSlot(slot.time)}
+                >
+                  {slot.time}
+                  {!slot.available && (
+                    <Badge variant="secondary" className="ml-2 text-[10px]">
+                      Penuh
+                    </Badge>
+                  )}
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
-      <div className="flex justify-between pt-4">
-        <Button variant="outline" onClick={handleBack}>
-          <ChevronLeft className="w-4 h-4 mr-2" />
-          Kembali
-        </Button>
-        <Button
-          size="lg"
-          onClick={handleContinue}
-          disabled={!selectedDate || !selectedTimeSlot}
-          className="min-w-[200px]"
-        >
-          Lanjutkan
-          <ChevronRight className="w-4 h-4 ml-2" />
-        </Button>
+      {/* Bottom Summary Bar */}
+      <div className="sticky bottom-4 z-10">
+        <Card className="p-4 shadow-lg border-primary/20">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-6">
+              {selectedAccommodation && (
+                <div className="text-center sm:text-left">
+                  <p className="text-sm text-muted-foreground">Total Estimasi</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {formatPrice(selectedAccommodation.price * nights)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatPrice(selectedAccommodation.price)} x {nights} malam
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <Button variant="outline" onClick={handleBack} className="flex-1 sm:flex-none">
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Kembali
+              </Button>
+              <Button
+                size="lg"
+                onClick={handleContinue}
+                disabled={!selectedDate || !selectedTimeSlot}
+                className="flex-1 sm:flex-none min-w-[140px]"
+              >
+                Lanjutkan
+              </Button>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );
