@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { TreePine, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { BookingProvider, useBooking } from "@/lib/booking-context";
@@ -11,9 +13,99 @@ import { Step4Cart } from "@/components/booking/step-4-cart";
 import { Step5Checkout } from "@/components/booking/step-5-checkout";
 import { Step6Confirmation } from "@/components/booking/step-6-confirmation";
 
-function BookingContent() {
-  const { step } = useBooking();
+// Accommodation data matching wisata page
+const accommodationData: Record<string, {
+  id: string;
+  type: "glamping" | "camping" | "homestay";
+  name: string;
+  location: string;
+  description: string;
+  price: number;
+  rating: number;
+  image: string;
+  capacity: string;
+}> = {
+  "glamping-1": {
+    id: "glamping-1",
+    type: "glamping",
+    name: "Glamping Riverside Luxury",
+    location: "Capolaga Highland",
+    description: "Tenda glamping mewah dengan pemandangan langsung ke sungai Capolaga.",
+    price: 850000,
+    rating: 4.9,
+    image: "/images/glamping.jpg",
+    capacity: "2-4 Orang",
+  },
+  "glamping-2": {
+    id: "glamping-2",
+    type: "glamping",
+    name: "Glamping at Mount Batur",
+    location: "Capolaga Peak",
+    description: "Pengalaman glamping premium dengan view gunung yang memukau.",
+    price: 1200000,
+    rating: 4.8,
+    image: "/images/glamping.jpg",
+    capacity: "2-4 Orang",
+  },
+  "camping-1": {
+    id: "camping-1",
+    type: "camping",
+    name: "Standard Camping Ground",
+    location: "Capolaga Riverside",
+    description: "Area camping luas di bawah hutan pinus dengan fasilitas toilet bersih.",
+    price: 150000,
+    rating: 4.7,
+    image: "/images/camping.jpg",
+    capacity: "2-6 Orang",
+  },
+  "camping-2": {
+    id: "camping-2",
+    type: "camping",
+    name: "Riverside Camping",
+    location: "Capolaga River Bank",
+    description: "Camping tradisional di tepi sungai yang indah.",
+    price: 200000,
+    rating: 4.6,
+    image: "/images/camping.jpg",
+    capacity: "2-4 Orang",
+  },
+  "homestay-1": {
+    id: "homestay-1",
+    type: "homestay",
+    name: "Homestay Forest View",
+    location: "Capolaga Village",
+    description: "Rumah kayu estetik yang nyaman untuk keluarga besar.",
+    price: 1300000,
+    rating: 4.8,
+    image: "/images/homestay.jpg",
+    capacity: "4-8 Orang",
+  },
+  "homestay-2": {
+    id: "homestay-2",
+    type: "homestay",
+    name: "Traditional Wooden Cabin",
+    location: "Capolaga Hills",
+    description: "Kabin kayu tradisional dengan sentuhan modern.",
+    price: 950000,
+    rating: 4.7,
+    image: "/images/homestay.jpg",
+    capacity: "2-4 Orang",
+  },
+};
+
+function BookingContentInner() {
+  const searchParams = useSearchParams();
+  const { step, selectAccommodation, setStep, selectedAccommodation } = useBooking();
   const isConfirmation = step === 6;
+
+  // Handle accommodation from URL param
+  useEffect(() => {
+    const accommodationId = searchParams.get("accommodation");
+    if (accommodationId && accommodationData[accommodationId] && !selectedAccommodation) {
+      selectAccommodation(accommodationData[accommodationId]);
+      setStep(2); // Go directly to date selection
+    }
+  }, [searchParams, selectAccommodation, setStep, selectedAccommodation]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -28,11 +120,11 @@ function BookingContent() {
               <span className="text-xl font-bold text-foreground">CapolagaGo</span>
             </Link>
             <Link
-              href="/"
+              href="/wisata"
               className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Kembali ke Beranda</span>
+              <span className="hidden sm:inline">Kembali ke Pilihan Wisata</span>
               <span className="sm:hidden">Kembali</span>
             </Link>
           </div>
@@ -70,6 +162,14 @@ function BookingContent() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function BookingContent() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>}>
+      <BookingContentInner />
+    </Suspense>
   );
 }
 

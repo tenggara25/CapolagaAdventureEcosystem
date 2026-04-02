@@ -64,7 +64,7 @@ export function FeaturedExperiences() {
             </h2>
           </div>
           <Link
-            href="/booking"
+            href="/wisata"
             className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium transition-colors"
           >
             Lihat Semua
@@ -77,7 +77,7 @@ export function FeaturedExperiences() {
           {experiences.map((exp) => (
             <Link
               key={exp.id}
-              href="/booking"
+              href="/wisata"
               className="group bg-card rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-lg transition-all duration-300"
             >
               {/* Image */}

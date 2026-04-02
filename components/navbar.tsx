@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/booking", label: "Booking" },
+  { href: "/wisata", label: "Booking" },
   { href: "/#paket", label: "Paket Wisata" },
   { href: "/#addon", label: "Add-on Activity" },
   { href: "/#about", label: "Tentang Kami" },

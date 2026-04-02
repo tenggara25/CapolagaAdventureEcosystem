@@ -31,7 +31,7 @@ export function HeroSection() {
                 className="bg-white text-[#1a3a4a] hover:bg-white/90 font-semibold"
                 asChild
               >
-                <Link href="/booking">
+                <Link href="/wisata">
                   <Zap className="h-4 w-4 mr-2" />
                   Book Now
                 </Link>
@@ -128,7 +128,7 @@ export function HeroSection() {
               className="bg-[#2d9da8] hover:bg-[#2d9da8]/90 text-white px-8"
               asChild
             >
-              <Link href="/booking">
+              <Link href="/wisata">
                 <Search className="h-4 w-4 mr-2" />
                 Cari Sekarang
               </Link>
