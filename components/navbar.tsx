@@ -6,11 +6,11 @@ import { Menu, X, TreePine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
-  { href: "#home", label: "Home" },
-  { href: "#booking", label: "Booking" },
-  { href: "#addon", label: "Add-on" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
+  { href: "/", label: "Home" },
+  { href: "/booking", label: "Booking" },
+  { href: "/#addon", label: "Add-on" },
+  { href: "/#about", label: "About" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export function Navbar() {

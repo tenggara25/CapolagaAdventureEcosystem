@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Search, Calendar, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -84,9 +85,12 @@ export function HeroSection() {
                   <Button
                     size="lg"
                     className="w-full py-3 h-auto text-base font-semibold bg-primary hover:bg-primary/90"
+                    asChild
                   >
-                    <Search className="h-5 w-5 mr-2" />
-                    Cari
+                    <Link href="/booking">
+                      <Search className="h-5 w-5 mr-2" />
+                      Cari
+                    </Link>
                   </Button>
                 </div>
               </div>
